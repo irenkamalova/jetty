@@ -5,7 +5,6 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.ForwardedRequestCustomizer;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -15,7 +14,6 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SessionIdManager;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.session.DefaultSessionIdManager;
-import org.eclipse.jetty.webapp.WebAppContext;
 
 public class HelloWorld extends AbstractHandler
 {
@@ -25,13 +23,12 @@ public class HelloWorld extends AbstractHandler
                        HttpServletResponse response)
         throws IOException, ServletException
     {
-        request.getSession().setMaxInactiveInterval(1);
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         baseRequest.setHandled(true);
 
         try {
-            Thread.sleep(40 * 1000);
+            Thread.sleep(5 * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -77,7 +74,9 @@ public class HelloWorld extends AbstractHandler
     private static HttpConnectionFactory createHttpConnectionFactory() {
         HttpConfiguration httpConfig = new HttpConfiguration();
         httpConfig.setSecureScheme("https");
-        httpConfig.setBlockingTimeout(100);
+        httpConfig.setBlockingTimeout(1);
+        httpConfig.setMinResponseDataRate(1);
+        httpConfig.setMinRequestDataRate(1);
         httpConfig.addCustomizer(new ForwardedRequestCustomizer());
         return new HttpConnectionFactory(httpConfig);
     }
