@@ -48,12 +48,6 @@ public class HelloWorld extends AbstractHandler
         server.setConnectors(new Connector[] {localhost});
 
         server.start();
-
-        SessionIdManager sessionIdManager = new DefaultSessionIdManager(server);
-        sessionIdManager.getSessionHandlers().forEach(s -> s.setMaxInactiveInterval(1));
-        server.setSessionIdManager(sessionIdManager);
-
-
         server.join();
     }
 
@@ -78,6 +72,7 @@ public class HelloWorld extends AbstractHandler
         httpConfig.setBlockingTimeout(1);
         httpConfig.setMinResponseDataRate(1);
         httpConfig.setMinRequestDataRate(1);
+        httpConfig.setIdleTimeout(1);
         httpConfig.addCustomizer(new ForwardedRequestCustomizer());
         return new HttpConnectionFactory(httpConfig);
     }
