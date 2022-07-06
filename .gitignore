@@ -1,0 +1,13 @@
+*.iml
+.idea
+.gradle/
+**/build/
+*/out/
+generated
+*.DS_Store
+.settings
+.project
+.classpath
+*/bin/
+*.ipr
+target/
