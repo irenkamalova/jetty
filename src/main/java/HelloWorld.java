@@ -5,6 +5,7 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.ForwardedRequestCustomizer;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -44,7 +45,7 @@ public class HelloWorld extends AbstractHandler
         server.setHandler(handler);
 
         ServerConnector localhost = createSocketConnector(server, "localhost", 8081);
-        server.addConnector(localhost);
+        server.setConnectors(new Connector[] {localhost});
 
         server.start();
 
