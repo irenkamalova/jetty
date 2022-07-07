@@ -61,7 +61,7 @@ public class HelloWorld extends AbstractHandler
         FilterHolder holder = new FilterHolder(filter);
         String name = "FilterHolder";
         holder.setName(name);
-        holder.setInitParameter("maxRequestMs", "7000");
+        holder.setInitParameter("maxRequestMs", "1000");
         context.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
         context.setInitParameter(ServletContextHandler.MANAGED_ATTRIBUTES, name);
 
