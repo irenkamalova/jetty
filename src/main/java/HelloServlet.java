@@ -11,14 +11,14 @@ public class HelloServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request,
                        HttpServletResponse response)
-        throws IOException, ServletException
+        throws IOException
     {
-        //response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
 
-        long i = 0;
-        while (i < Long.MAX_VALUE) {
-            i++;
+        try {
+            Thread.sleep(5 * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         response.getWriter().println("Hello World");
     }
