@@ -1,10 +1,15 @@
+import javax.management.MBeanServer;
+import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.ForwardedRequestCustomizer;
 import org.eclipse.jetty.server.HttpConfiguration;
@@ -15,6 +20,9 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SessionIdManager;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.session.DefaultSessionIdManager;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlets.DoSFilter;
 
 public class HelloWorld extends AbstractHandler
 {
@@ -24,7 +32,7 @@ public class HelloWorld extends AbstractHandler
                        HttpServletResponse response)
         throws IOException, ServletException
     {
-        response.setContentType("text/html;charset=utf-8");
+        //response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         baseRequest.setHandled(true);
 
@@ -40,12 +48,22 @@ public class HelloWorld extends AbstractHandler
     {
         Server server = new Server(8081);
 
-        var handler = new HelloWorld();
-        handler.setStopTimeout(1);
-        server.setHandler(handler);
-
+        //var handler = new HelloWorld();
+        //handler.setStopTimeout(1);
+        //server.setHandler(handler);
         ServerConnector localhost = createSocketConnector(server, "localhost", 8081);
         server.setConnectors(new Connector[] {localhost});
+
+        ServletContextHandler context = new ServletContextHandler(server, "/");
+        context.addServlet(HelloServlet.class, "/hello");
+        DoSFilter filter = new DoSFilter();
+        //filter.setMaxRequestMs(100);
+        FilterHolder holder = new FilterHolder(filter);
+        String name = "FilterHolder";
+        holder.setName(name);
+        holder.setInitParameter("maxRequestMs", "7000");
+        context.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
+        context.setInitParameter(ServletContextHandler.MANAGED_ATTRIBUTES, name);
 
         server.start();
         server.join();
